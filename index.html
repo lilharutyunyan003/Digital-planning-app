@@ -28,35 +28,22 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
         }
-        .font-serif {
-            font-family: 'Cormorant Garamond', serif;
-        }
+        .font-serif { font-family: 'Cormorant Garamond', serif; }
         
-        /* Subtle Film Grain Overlay for Texture */
+        /* Subtle Film Grain Overlay */
         .grain-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 50;
-            opacity: 0.035;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 9999; opacity: 0.035;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
 
-        /* Advanced Animation Utilities */
         .image-mask {
             clip-path: inset(100% 0 0 0);
             transition: clip-path 1.4s cubic-bezier(0.77, 0, 0.175, 1);
         }
-        .image-mask.revealed {
-            clip-path: inset(0 0 0 0);
-        }
+        .image-mask.revealed { clip-path: inset(0 0 0 0); }
         
-        .float-animation {
-            animation: float 8s ease-in-out infinite;
-        }
+        .float-animation { animation: float 8s ease-in-out infinite; }
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-25px) rotate(1deg); }
@@ -66,423 +53,516 @@
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
         }
-        .animate-marquee {
-            animation: marquee 25s linear infinite;
-        }
+        .animate-marquee { animation: marquee 25s linear infinite; }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--color-bg); }
         ::-webkit-scrollbar-thumb { background: #D6D3D1; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #A8A29E; }
+
+        /* App Specific Styles */
+        .app-view { display: none; height: 100vh; width: 100vw; overflow: hidden; }
+        .app-view.active { display: flex; }
+        
+        .task-card {
+            transition: all 0.3s ease;
+        }
+        .task-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-stone-300 selection:text-stone-900">
     <div class="grain-overlay"></div>
 
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-40 bg-[#FAFAF9]/80 backdrop-blur-md border-b border-stone-200/50 px-6 py-4 flex justify-between items-center transition-all duration-300" id="navbar">
-        <div class="text-2xl font-serif tracking-tight font-semibold text-stone-900">DAYFLOW</div>
-        <div class="hidden md:flex gap-8 text-sm font-medium tracking-wide text-stone-600">
-            <a href="#philosophy" class="hover:text-stone-900 transition-colors">Philosophy</a>
-            <a href="#features" class="hover:text-stone-900 transition-colors">Features</a>
-            <a href="#gallery" class="hover:text-stone-900 transition-colors">Gallery</a>
-            <a href="#pricing" class="hover:text-stone-900 transition-colors">Pricing</a>
-        </div>
-        <a href="#pricing" class="px-6 py-2.5 bg-stone-900 text-white rounded-full text-sm font-medium hover:bg-stone-700 transition-all duration-300 shadow-lg shadow-stone-900/10">Get Started</a>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="relative min-h-screen flex items-center pt-20 px-6 md:px-12 lg:px-24 overflow-hidden">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 w-full items-center">
-            <div class="lg:col-span-7 z-10">
-                <h1 class="font-serif text-6xl md:text-8xl lg:text-9xl leading-[0.9] text-stone-900 mb-8">
-                    <div class="overflow-hidden"><span class="hero-line block">Design your</span></div>
-                    <div class="overflow-hidden"><span class="hero-line block italic text-stone-500">days.</span></div>
-                    <div class="overflow-hidden"><span class="hero-line block">Flow through</span></div>
-                    <div class="overflow-hidden"><span class="hero-line block italic text-stone-500">life.</span></div>
-                </h1>
-                <p class="text-lg md:text-xl text-stone-600 max-w-md mb-10 leading-relaxed hero-fade">
-                    The digital planner that adapts to your rhythm. Seamlessly integrate photos, videos, and your daily intentions in one beautiful, animated space.
-                </p>
-                <div class="flex flex-wrap gap-4 hero-fade">
-                    <a href="#pricing" class="px-8 py-4 bg-stone-900 text-white rounded-full text-sm font-medium hover:bg-stone-700 transition-all duration-300 flex items-center gap-2 group">
-                        Start your flow
-                        <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                    </a>
-                    <a href="#video-showcase" class="px-8 py-4 border border-stone-300 text-stone-900 rounded-full text-sm font-medium hover:border-stone-900 transition-all duration-300">
-                        Watch the film
-                    </a>
-                </div>
+    <!-- ========================================== -->
+    <!-- VIEW 1: LANDING PAGE -->
+    <!-- ========================================== -->
+    <div id="view-landing" class="view-container">
+        <!-- Navigation -->
+        <nav class="fixed top-0 w-full z-40 bg-[#FAFAF9]/80 backdrop-blur-md border-b border-stone-200/50 px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-serif tracking-tight font-semibold text-stone-900">DAYFLOW</div>
+            <div class="hidden md:flex gap-8 text-sm font-medium tracking-wide text-stone-600">
+                <a href="#philosophy" class="hover:text-stone-900 transition-colors">Philosophy</a>
+                <a href="#features" class="hover:text-stone-900 transition-colors">Features</a>
+                <a href="#gallery" class="hover:text-stone-900 transition-colors">Gallery</a>
+                <a href="#pricing" class="hover:text-stone-900 transition-colors">Pricing</a>
             </div>
-            
-            <!-- Distinctive Hero Mockup -->
-            <div class="lg:col-span-5 relative h-[500px] md:h-[700px] flex items-center justify-center">
-                <div class="relative w-full max-w-md float-animation">
-                    <div class="absolute inset-0 bg-stone-200 rounded-[2.5rem] transform rotate-3 scale-95 opacity-40"></div>
-                    <div class="relative bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-stone-100 parallax-img">
-                        <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=1000&auto=format&fit=crop" alt="Dayflow Planner Interface" class="w-full h-full object-cover">
-                        
-                        <!-- Floating UI Element -->
-                        <div class="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-xl rounded-2xl p-4 shadow-lg border border-stone-100/50">
-                            <div class="flex items-center gap-3">
-                                <div class="w-12 h-12 rounded-full bg-stone-200 overflow-hidden flex-shrink-0">
-                                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=200&auto=format&fit=crop" class="w-full h-full object-cover">
-                                </div>
-                                <div>
-                                    <div class="text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-0.5">Today's Focus</div>
-                                    <div class="text-sm font-medium text-stone-900">Morning reflection & creative work</div>
+            <button onclick="switchView('auth')" class="px-6 py-2.5 bg-stone-900 text-white rounded-full text-sm font-medium hover:bg-stone-700 transition-all duration-300 shadow-lg shadow-stone-900/10">Get Started</button>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="relative min-h-screen flex items-center pt-20 px-6 md:px-12 lg:px-24 overflow-hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 w-full items-center">
+                <div class="lg:col-span-7 z-10">
+                    <h1 class="font-serif text-6xl md:text-8xl lg:text-9xl leading-[0.9] text-stone-900 mb-8">
+                        <div class="overflow-hidden"><span class="hero-line block">Design your</span></div>
+                        <div class="overflow-hidden"><span class="hero-line block italic text-stone-500">days.</span></div>
+                        <div class="overflow-hidden"><span class="hero-line block">Flow through</span></div>
+                        <div class="overflow-hidden"><span class="hero-line block italic text-stone-500">life.</span></div>
+                    </h1>
+                    <p class="text-lg md:text-xl text-stone-600 max-w-md mb-10 leading-relaxed hero-fade">
+                        The digital planner that adapts to your rhythm. Seamlessly integrate photos, videos, and your daily intentions in one beautiful, animated space.
+                    </p>
+                    <div class="flex flex-wrap gap-4 hero-fade">
+                        <button onclick="switchView('auth')" class="px-8 py-4 bg-stone-900 text-white rounded-full text-sm font-medium hover:bg-stone-700 transition-all duration-300 flex items-center gap-2 group">
+                            Start your flow
+                            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-5 relative h-[500px] md:h-[700px] flex items-center justify-center">
+                    <div class="relative w-full max-w-md float-animation">
+                        <div class="absolute inset-0 bg-stone-200 rounded-[2.5rem] transform rotate-3 scale-95 opacity-40"></div>
+                        <div class="relative bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-stone-100 parallax-img">
+                            <img src="https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=1000&auto=format&fit=crop" alt="Dayflow Planner Interface" class="w-full h-full object-cover">
+                            <div class="absolute bottom-6 left-6 right-6 bg-white/90 backdrop-blur-xl rounded-2xl p-4 shadow-lg border border-stone-100/50">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-full bg-stone-200 overflow-hidden flex-shrink-0">
+                                        <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=200&auto=format&fit=crop" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <div class="text-[10px] font-bold text-stone-500 uppercase tracking-widest mb-0.5">Today's Focus</div>
+                                        <div class="text-sm font-medium text-stone-900">Morning reflection & creative work</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Marquee Divider -->
-    <div class="py-10 border-y border-stone-200 overflow-hidden bg-stone-100/50">
-        <div class="flex whitespace-nowrap animate-marquee">
-            <span class="text-4xl md:text-6xl font-serif text-stone-300 mx-8">INTENTIONAL</span>
-            <span class="text-4xl md:text-6xl font-serif text-stone-900 mx-8 italic">BEAUTIFUL</span>
-            <span class="text-4xl md:text-6xl font-serif text-stone-300 mx-8">SEAMLESS</span>
-            <span class="text-4xl md:text-6xl font-serif text-stone-900 mx-8 italic">ADAPTIVE</span>
-            <span class="text-4xl md:text-6xl font-serif text-stone-300 mx-8">INTENTIONAL</span>
-            <span class="text-4xl md:text-6xl font-serif text-stone-900 mx-8 italic">BEAUTIFUL</span>
-            <span class="text-4xl md:text-6xl font-serif text-stone-300 mx-8">SEAMLESS</span>
-            <span class="text-4xl md:text-6xl font-serif text-stone-900 mx-8 italic">ADAPTIVE</span>
+        <!-- Marquee Divider -->
+        <div class="py-10 border-y border-stone-200 overflow-hidden bg-stone-100/50">
+            <div class="flex whitespace-nowrap animate-marquee">
+                <span class="text-4xl md:text-6xl font-serif text-stone-300 mx-8">INTENTIONAL</span>
+                <span class="text-4xl md:text-6xl font-serif text-stone-900 mx-8 italic">BEAUTIFUL</span>
+                <span class="text-4xl md:text-6xl font-serif text-stone-300 mx-8">SEAMLESS</span>
+                <span class="text-4xl md:text-6xl font-serif text-stone-900 mx-8 italic">ADAPTIVE</span>
+                <span class="text-4xl md:text-6xl font-serif text-stone-300 mx-8">INTENTIONAL</span>
+                <span class="text-4xl md:text-6xl font-serif text-stone-900 mx-8 italic">BEAUTIFUL</span>
+            </div>
+        </div>
+
+        <!-- Pricing Section (Condensed for brevity, links to auth) -->
+        <section id="pricing" class="py-32 px-6 md:px-12 lg:px-24">
+            <div class="max-w-4xl mx-auto text-center mb-20">
+                <span class="text-xs font-bold tracking-[0.2em] text-stone-500 uppercase mb-4 block reveal-up">Pricing</span>
+                <h2 class="font-serif text-5xl md:text-6xl text-stone-900 mb-6 reveal-up">Simple investment. <span class="italic text-stone-500">Infinite return.</span></h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <div class="group p-8 md:p-12 rounded-3xl border border-stone-200 bg-white hover:border-stone-400 transition-all duration-500 hover:shadow-xl reveal-up">
+                    <h3 class="font-serif text-3xl text-stone-900 mb-2">Dayflow Basic</h3>
+                    <div class="flex items-baseline gap-1 mb-8"><span class="font-serif text-5xl text-stone-900">$0</span><span class="text-stone-500">/forever</span></div>
+                    <button onclick="switchView('auth')" class="w-full py-4 rounded-full border border-stone-900 text-stone-900 font-medium hover:bg-stone-900 hover:text-white transition-all duration-300">Get Started Free</button>
+                </div>
+                <div class="group relative p-8 md:p-12 rounded-3xl border border-stone-900 bg-stone-900 text-stone-100 hover:shadow-2xl transition-all duration-500 transform md:-translate-y-4 reveal-up">
+                    <div class="absolute top-0 right-8 bg-white text-stone-900 text-[10px] font-bold px-3 py-1.5 rounded-b-lg uppercase tracking-widest">Recommended</div>
+                    <h3 class="font-serif text-3xl mb-2">Dayflow Pro</h3>
+                    <div class="flex items-baseline gap-1 mb-8"><span class="font-serif text-5xl text-white">$9</span><span class="text-stone-400">/month</span></div>
+                    <button onclick="switchView('auth')" class="w-full py-4 rounded-full bg-white text-stone-900 font-medium hover:bg-stone-200 transition-all duration-300">Upgrade to Pro</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- VIEW 2: AUTHENTICATION -->
+    <!-- ========================================== -->
+    <div id="view-auth" class="app-view bg-[#FAFAF9] flex items-center justify-center p-6">
+        <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-stone-100 p-8 md:p-12 relative overflow-hidden">
+            <button onclick="switchView('landing')" class="absolute top-6 left-6 text-stone-400 hover:text-stone-900 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            </button>
+            
+            <div class="text-center mb-10">
+                <div class="text-3xl font-serif font-semibold text-stone-900 mb-2">DAYFLOW</div>
+                <p class="text-stone-500 text-sm">Sign in to continue your flow</p>
+            </div>
+
+            <form onsubmit="handleLogin(event)" class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold tracking-widest text-stone-500 uppercase mb-2">Email Address</label>
+                    <input type="email" value="hello@dayflow.app" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 outline-none transition-all bg-stone-50" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold tracking-widest text-stone-500 uppercase mb-2">Password</label>
+                    <input type="password" value="password" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 outline-none transition-all bg-stone-50" required>
+                </div>
+                <button type="submit" class="w-full py-4 bg-stone-900 text-white rounded-xl font-medium hover:bg-stone-700 transition-all duration-300 shadow-lg shadow-stone-900/10 flex items-center justify-center gap-2">
+                    <span>Sign In</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                </button>
+            </form>
+            <p class="text-center text-xs text-stone-400 mt-8">By continuing, you agree to our Terms of Service.</p>
         </div>
     </div>
 
-    <!-- Philosophy Section (Editorial Layout) -->
-    <section id="philosophy" class="py-32 px-6 md:px-12 lg:px-24">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-            <div class="lg:col-span-5 lg:sticky lg:top-32">
-                <span class="text-xs font-bold tracking-[0.2em] text-stone-500 uppercase mb-4 block reveal-up">The Philosophy</span>
-                <h2 class="font-serif text-5xl md:text-7xl text-stone-900 leading-[1.1] mb-8 reveal-up">
-                    More than a calendar. <span class="italic text-stone-500">A canvas for your chaos.</span>
-                </h2>
-                <p class="text-stone-600 text-lg leading-relaxed mb-8 reveal-up">
-                    Dayflow rejects the rigid, soulless grids of traditional planners. We believe your digital space should breathe, adapt, and inspire. Embed your memories, animate your goals, and watch your days unfold with purpose.
-                </p>
-                <div class="h-px w-24 bg-stone-900 reveal-up"></div>
+    <!-- ========================================== -->
+    <!-- VIEW 3: APP DASHBOARD -->
+    <!-- ========================================== -->
+    <div id="view-app" class="app-view bg-[#FAFAF9]">
+        <!-- Sidebar -->
+        <aside class="w-20 lg:w-64 border-r border-stone-200 bg-white/60 backdrop-blur-md flex flex-col flex-shrink-0 transition-all duration-300">
+            <div class="p-6 flex items-center gap-3">
+                <div class="w-8 h-8 bg-stone-900 rounded-lg flex items-center justify-center text-white font-serif font-bold text-lg">D</div>
+                <span class="text-xl font-serif font-semibold text-stone-900 hidden lg:block">DAYFLOW</span>
             </div>
-            <div class="lg:col-span-7 relative mt-12 lg:mt-0">
-                <div class="image-mask rounded-2xl overflow-hidden shadow-2xl reveal-image">
-                    <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=1000&auto=format&fit=crop" alt="Desk setup with planner" class="w-full h-[600px] object-cover hover:scale-105 transition-transform duration-700 ease-out">
-                </div>
-                <div class="absolute -bottom-12 -left-12 w-56 h-56 bg-stone-200 rounded-2xl overflow-hidden shadow-xl border-4 border-[#FAFAF9] image-mask reveal-image-delayed hidden md:block">
-                    <img src="https://images.unsplash.com/photo-1512486130939-2c4f79935e4f?q=80&w=400&auto=format&fit=crop" alt="Detail shot" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Video Showcase Section -->
-    <section id="video-showcase" class="py-32 px-6 md:px-12 lg:px-24 bg-stone-900 text-stone-100">
-        <div class="max-w-6xl mx-auto text-center mb-16">
-            <span class="text-xs font-bold tracking-[0.2em] text-stone-500 uppercase mb-4 block reveal-up">In Motion</span>
-            <h2 class="font-serif text-5xl md:text-7xl mb-8 reveal-up">See the <span class="italic text-stone-400">flow</span> in action.</h2>
-        </div>
-        
-        <div class="relative max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-stone-800 group cursor-pointer reveal-up" id="video-container">
-            <video id="promo-video" class="w-full h-auto object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500" poster="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop" muted loop playsinline>
-                <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-futuristic-devices-99786-large.mp4" type="video/mp4">
-            </video>
-            <div id="play-button" class="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/10 transition-colors duration-300">
-                <div class="w-24 h-24 rounded-full bg-white/10 backdrop-blur-md border border-white/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                </div>
-            </div>
-        </div>
-        
-        <div class="max-w-5xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-sm text-stone-400">
-            <div class="reveal-up">
-                <h4 class="text-white font-medium mb-2 text-base">Fluid Animations</h4>
-                <p>Every transition is crafted to feel natural, keeping you focused and calm.</p>
-            </div>
-            <div class="reveal-up">
-                <h4 class="text-white font-medium mb-2 text-base">Rich Media</h4>
-                <p>Embed videos and photos directly into your daily spreads without clutter.</p>
-            </div>
-            <div class="reveal-up">
-                <h4 class="text-white font-medium mb-2 text-base">Smart Sync</h4>
-                <p>Your flow travels with you. Seamless synchronization across all devices.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features (Asymmetric Editorial) -->
-    <section id="features" class="py-32 px-6 md:px-12 lg:px-24">
-        <!-- Feature 1: Photos -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-32 items-center">
-            <div class="lg:col-span-7 order-2 lg:order-1">
-                <div class="image-mask rounded-2xl overflow-hidden shadow-xl reveal-image">
-                    <img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=1000&auto=format&fit=crop" alt="Photo integration" class="w-full h-[500px] object-cover hover:scale-105 transition-transform duration-700">
-                </div>
-            </div>
-            <div class="lg:col-span-5 order-1 lg:order-2 lg:pl-12">
-                <span class="text-xs font-bold tracking-[0.2em] text-stone-500 uppercase mb-4 block reveal-up">01 / Capture</span>
-                <h3 class="font-serif text-4xl md:text-5xl text-stone-900 mb-6 reveal-up">Your memories, <span class="italic">integrated.</span></h3>
-                <p class="text-stone-600 text-lg leading-relaxed mb-6 reveal-up">
-                    Don't just write about your day. Show it. Drag and drop photos directly into your daily journal. Our smart layout engine automatically arranges them beautifully, preserving your aesthetic.
-                </p>
-                <ul class="space-y-3 text-stone-600 reveal-up">
-                    <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-stone-900"></span> Smart cropping & auto-alignment</li>
-                    <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-stone-900"></span> Instant masonry gallery generation</li>
-                    <li class="flex items-center gap-3"><span class="w-1.5 h-1.5 rounded-full bg-stone-900"></span> Zero quality loss compression</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Feature 2: Videos -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            <div class="lg:col-span-5 lg:pr-12">
-                <span class="text-xs font-bold tracking-[0.2em] text-stone-500 uppercase mb-4 block reveal-up">02 / Animate</span>
-                <h3 class="font-serif text-4xl md:text-5xl text-stone-900 mb-6 reveal-up">Bring your pages <span class="italic">to life.</span></h3>
-                <p class="text-stone-600 text-lg leading-relaxed mb-6 reveal-up">
-                    Static pages are a thing of the past. Embed short video clips, animated stickers, and subtle micro-interactions that make checking off tasks a genuinely satisfying, cinematic experience.
-                </p>
-                <a href="#" class="inline-flex items-center gap-2 text-stone-900 font-medium border-b border-stone-900 pb-1 hover:gap-4 transition-all duration-300 reveal-up">
-                    Explore animation features
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+            
+            <nav class="flex-1 px-3 space-y-1 mt-4">
+                <a href="#" class="flex items-center gap-3 px-4 py-3 bg-stone-900 text-white rounded-xl font-medium transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span class="hidden lg:block">Today</span>
                 </a>
-            </div>
-            <div class="lg:col-span-7">
-                <div class="image-mask rounded-2xl overflow-hidden shadow-xl reveal-image">
-                    <img src="https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?q=80&w=1000&auto=format&fit=crop" alt="Video and animation" class="w-full h-[500px] object-cover hover:scale-105 transition-transform duration-700">
-                </div>
-            </div>
-        </div>
-    </section>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 text-stone-600 hover:bg-stone-100 rounded-xl font-medium transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    <span class="hidden lg:block">Media Library</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 text-stone-600 hover:bg-stone-100 rounded-xl font-medium transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                    <span class="hidden lg:block">Templates</span>
+                </a>
+            </nav>
 
-    <!-- Gallery (Masonry Editorial) -->
-    <section id="gallery" class="py-32 px-6 md:px-12 lg:px-24 bg-stone-100">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-16">
-            <div>
-                <span class="text-xs font-bold tracking-[0.2em] text-stone-500 uppercase mb-4 block reveal-up">Gallery</span>
-                <h2 class="font-serif text-5xl md:text-6xl text-stone-900 reveal-up">Crafted by the <span class="italic">community.</span></h2>
-            </div>
-            <a href="#" class="hidden md:inline-flex items-center gap-2 text-stone-900 font-medium border-b border-stone-900 pb-1 hover:gap-4 transition-all duration-300 mt-6 md:mt-0 reveal-up">
-                View all templates
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-            </a>
-        </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
-            <div class="md:col-span-2 md:row-span-2 relative group overflow-hidden rounded-2xl cursor-pointer reveal-up">
-                <img src="https://images.unsplash.com/photo-1506784365847-bbad939e9335?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Template 1">
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-end p-8">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                        <h4 class="font-serif text-3xl">Minimalist Morning</h4>
-                        <p class="text-sm opacity-80 mt-1">By @sarah.designs</p>
+            <div class="p-4 border-t border-stone-200">
+                <div class="flex items-center gap-3 cursor-pointer hover:bg-stone-100 p-2 rounded-xl transition-colors" onclick="switchView('landing')">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format&fit=crop" class="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm">
+                    <div class="hidden lg:block overflow-hidden">
+                        <div class="text-sm font-medium text-stone-900 truncate">Alex Designer</div>
+                        <div class="text-xs text-stone-500 truncate">Pro Plan</div>
                     </div>
                 </div>
             </div>
-            <div class="relative group overflow-hidden rounded-2xl cursor-pointer reveal-up">
-                <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Template 2">
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-end p-6">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                        <h4 class="font-serif text-xl">Creative Studio</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="relative group overflow-hidden rounded-2xl cursor-pointer reveal-up">
-                <img src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?q=80&w=600&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Template 3">
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-end p-6">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                        <h4 class="font-serif text-xl">Weekly Flow</h4>
-                    </div>
-                </div>
-            </div>
-            <div class="md:col-span-3 relative group overflow-hidden rounded-2xl cursor-pointer reveal-up">
-                <img src="https://images.unsplash.com/photo-1456324504439-367cee3b3c32?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" alt="Template 4">
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300 flex items-end p-8">
-                    <div class="text-white opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-300">
-                        <h4 class="font-serif text-3xl">The Executive Dashboard</h4>
-                        <p class="text-sm opacity-80 mt-1">By @flow.master</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </aside>
 
-    <!-- Pricing Section -->
-    <section id="pricing" class="py-32 px-6 md:px-12 lg:px-24">
-        <div class="max-w-4xl mx-auto text-center mb-20">
-            <span class="text-xs font-bold tracking-[0.2em] text-stone-500 uppercase mb-4 block reveal-up">Pricing</span>
-            <h2 class="font-serif text-5xl md:text-6xl text-stone-900 mb-6 reveal-up">Simple investment. <span class="italic text-stone-500">Infinite return.</span></h2>
-            <p class="text-stone-600 text-lg max-w-xl mx-auto reveal-up">Choose the plan that fits your rhythm. No hidden fees, no clutter. Just pure, focused planning.</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            <!-- Basic -->
-            <div class="group p-8 md:p-12 rounded-3xl border border-stone-200 bg-white hover:border-stone-400 transition-all duration-500 hover:shadow-xl reveal-up">
-                <h3 class="font-serif text-3xl text-stone-900 mb-2">Dayflow Basic</h3>
-                <p class="text-stone-500 mb-8 text-sm">For those just beginning their intentional journey.</p>
-                <div class="flex items-baseline gap-1 mb-8">
-                    <span class="font-serif text-5xl text-stone-900">$0</span>
-                    <span class="text-stone-500">/forever</span>
-                </div>
-                <ul class="space-y-4 mb-10 text-stone-600">
-                    <li class="flex items-center gap-3"><svg class="w-5 h-5 text-stone-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Core daily & weekly layouts</li>
-                    <li class="flex items-center gap-3"><svg class="w-5 h-5 text-stone-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Up to 10 photo embeds / month</li>
-                    <li class="flex items-center gap-3"><svg class="w-5 h-5 text-stone-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Basic animation presets</li>
-                </ul>
-                <button class="w-full py-4 rounded-full border border-stone-900 text-stone-900 font-medium hover:bg-stone-900 hover:text-white transition-all duration-300">Get Started Free</button>
-            </div>
-
-            <!-- Pro -->
-            <div class="group relative p-8 md:p-12 rounded-3xl border border-stone-900 bg-stone-900 text-stone-100 hover:shadow-2xl transition-all duration-500 transform md:-translate-y-4 reveal-up">
-                <div class="absolute top-0 right-8 bg-white text-stone-900 text-[10px] font-bold px-3 py-1.5 rounded-b-lg uppercase tracking-widest">Recommended</div>
-                <h3 class="font-serif text-3xl mb-2">Dayflow Pro</h3>
-                <p class="text-stone-400 mb-8 text-sm">For the dedicated creator seeking ultimate flexibility.</p>
-                <div class="flex items-baseline gap-1 mb-8">
-                    <span class="font-serif text-5xl text-white">$9</span>
-                    <span class="text-stone-400">/month</span>
-                </div>
-                <ul class="space-y-4 mb-10 text-stone-300">
-                    <li class="flex items-center gap-3"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Unlimited photo & video embeds</li>
-                    <li class="flex items-center gap-3"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Advanced custom animations</li>
-                    <li class="flex items-center gap-3"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Priority cloud sync & backups</li>
-                    <li class="flex items-center gap-3"><svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Exclusive community templates</li>
-                </ul>
-                <button class="w-full py-4 rounded-full bg-white text-stone-900 font-medium hover:bg-stone-200 transition-all duration-300">Upgrade to Pro</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="bg-stone-900 text-stone-400 py-24 px-6 md:px-12 lg:px-24">
-        <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24">
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-hidden relative">
+            <!-- Header -->
+            <header class="h-20 border-b border-stone-200 flex items-center justify-between px-8 bg-[#FAFAF9]/80 backdrop-blur-md flex-shrink-0">
                 <div>
-                    <h2 class="font-serif text-6xl md:text-8xl text-white leading-[0.9] mb-8 reveal-up">
-                        Begin your <br><span class="italic text-stone-500">flow today.</span>
-                    </h2>
-                    <a href="#pricing" class="inline-flex items-center gap-3 text-white text-lg font-medium border-b border-white/30 pb-2 hover:border-white transition-all duration-300 reveal-up">
-                        Download the app
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                    </a>
+                    <h1 class="font-serif text-3xl text-stone-900" id="current-date">Thursday, Oct 20</h1>
+                    <p class="text-stone-500 text-sm mt-1"><span id="task-count">3</span> tasks scheduled for today</p>
                 </div>
-                <div class="grid grid-cols-2 gap-12">
-                    <div>
-                        <h4 class="text-white font-medium mb-6">Product</h4>
-                        <ul class="space-y-4 text-sm">
-                            <li><a href="#" class="hover:text-white transition-colors">Features</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Templates</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Pricing</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Changelog</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h4 class="text-white font-medium mb-6">Company</h4>
-                        <ul class="space-y-4 text-sm">
-                            <li><a href="#" class="hover:text-white transition-colors">About</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
-                            <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
-                        </ul>
-                    </div>
+                <button onclick="openModal()" class="px-6 py-3 bg-stone-900 text-white rounded-full text-sm font-medium hover:bg-stone-700 transition-all flex items-center gap-2 shadow-lg shadow-stone-900/10 hover:shadow-xl hover:shadow-stone-900/20 transform hover:-translate-y-0.5 duration-300">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Add to Day
+                </button>
+            </header>
+
+            <!-- Schedule Timeline -->
+            <div class="flex-1 overflow-y-auto p-8" id="schedule-container">
+                <div class="max-w-3xl mx-auto space-y-6" id="task-list">
+                    <!-- Tasks will be injected here via JS -->
                 </div>
             </div>
-            <div class="border-t border-stone-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs tracking-wide">
-                <p>&copy; 2026 DAYFLOW. All rights reserved.</p>
-                <div class="flex gap-6">
-                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
-                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
-                </div>
+        </main>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL: ADD TASK -->
+    <!-- ========================================== -->
+    <div id="task-modal" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-stone-900/40 backdrop-blur-sm" onclick="closeModal()"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-stone-100 p-8 scale-95 opacity-0 transition-all duration-300" id="modal-content">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="font-serif text-3xl text-stone-900">Schedule Moment</h3>
+                <button onclick="closeModal()" class="text-stone-400 hover:text-stone-900 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </div>
+
+            <form onsubmit="handleAddTask(event)" class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold tracking-widest text-stone-500 uppercase mb-2">What are you doing?</label>
+                    <input type="text" id="task-title" placeholder="e.g., Morning Reflection" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 outline-none transition-all bg-stone-50" required>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold tracking-widest text-stone-500 uppercase mb-2">Time</label>
+                        <input type="time" id="task-time" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 outline-none transition-all bg-stone-50" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold tracking-widest text-stone-500 uppercase mb-2">Category</label>
+                        <select id="task-category" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 outline-none transition-all bg-stone-50">
+                            <option value="Focus">Focus</option>
+                            <option value="Creative">Creative</option>
+                            <option value="Rest">Rest</option>
+                            <option value="Meeting">Meeting</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold tracking-widest text-stone-500 uppercase mb-2">Attach Media (Photo/Video)</label>
+                    <div class="flex items-center gap-4">
+                        <label class="flex-1 flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-stone-300 rounded-xl cursor-pointer hover:border-stone-900 hover:bg-stone-50 transition-all group">
+                            <svg class="w-5 h-5 text-stone-400 group-hover:text-stone-900" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            <span class="text-sm text-stone-600 group-hover:text-stone-900">Choose File</span>
+                            <input type="file" id="task-media" class="hidden" accept="image/*,video/*" onchange="previewMedia(this)">
+                        </label>
+                        <div id="media-preview" class="hidden w-16 h-16 rounded-lg bg-stone-200 overflow-hidden flex-shrink-0 border border-stone-300">
+                            <img id="preview-img" src="" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold tracking-widest text-stone-500 uppercase mb-2">Entry Animation</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="cursor-pointer">
+                            <input type="radio" name="animation" value="fade" class="peer sr-only" checked>
+                            <div class="text-center py-3 rounded-xl border border-stone-200 peer-checked:border-stone-900 peer-checked:bg-stone-900 peer-checked:text-white transition-all text-sm font-medium">Gentle Fade</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="animation" value="slide" class="peer sr-only">
+                            <div class="text-center py-3 rounded-xl border border-stone-200 peer-checked:border-stone-900 peer-checked:bg-stone-900 peer-checked:text-white transition-all text-sm font-medium">Slide Up</div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" name="animation" value="elastic" class="peer sr-only">
+                            <div class="text-center py-3 rounded-xl border border-stone-200 peer-checked:border-stone-900 peer-checked:bg-stone-900 peer-checked:text-white transition-all text-sm font-medium">Elastic Pop</div>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-4 bg-stone-900 text-white rounded-xl font-medium hover:bg-stone-700 transition-all duration-300 shadow-lg mt-4">Add to Schedule</button>
+            </form>
         </div>
-    </footer>
+    </div>
 
-    <!-- Animation Scripts -->
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIC -->
+    <!-- ========================================== -->
     <script>
-        gsap.registerPlugin(ScrollTrigger);
+        // --- View Management ---
+        function switchView(viewName) {
+            const landing = document.getElementById('view-landing');
+            const auth = document.getElementById('view-auth');
+            const app = document.getElementById('view-app');
 
-        // Hero Animations
-        gsap.from(".hero-line", {
-            y: 150,
-            opacity: 0,
-            duration: 1.5,
-            stagger: 0.15,
-            ease: "power4.out",
-            delay: 0.2
-        });
+            let currentView = landing.classList.contains('hidden') ? (auth.classList.contains('active') ? auth : app) : landing;
 
-        gsap.from(".hero-fade", {
-            y: 30,
-            opacity: 0,
-            duration: 1.2,
-            stagger: 0.2,
-            ease: "power3.out",
-            delay: 0.8
-        });
-
-        // Scroll Reveals for Text
-        gsap.utils.toArray('.reveal-up').forEach(element => {
-            gsap.from(element, {
-                scrollTrigger: {
-                    trigger: element,
-                    start: "top 85%",
-                    toggleActions: "play none none reverse"
-                },
-                y: 50,
+            // Fade out current
+            gsap.to(currentView, {
                 opacity: 0,
-                duration: 1,
-                ease: "power3.out"
-            });
-        });
+                duration: 0.4,
+                onComplete: () => {
+                    landing.classList.add('hidden');
+                    auth.classList.remove('active');
+                    app.classList.remove('active');
 
-        // Image Mask Reveals (Cinematic wipe up)
-        gsap.utils.toArray('.reveal-image').forEach(element => {
-            ScrollTrigger.create({
-                trigger: element,
-                start: "top 80%",
-                onEnter: () => element.classList.add('revealed')
-            });
-        });
+                    if (viewName === 'landing') {
+                        landing.classList.remove('hidden');
+                        initLandingAnimations();
+                    } else if (viewName === 'auth') {
+                        auth.classList.add('active');
+                    } else if (viewName === 'app') {
+                        app.classList.add('active');
+                        renderTasks();
+                    }
 
-        gsap.utils.toArray('.reveal-image-delayed').forEach(element => {
-            ScrollTrigger.create({
-                trigger: element,
-                start: "top 70%",
-                onEnter: () => {
-                    setTimeout(() => element.classList.add('revealed'), 200);
+                    // Fade in new
+                    gsap.fromTo(viewName === 'landing' ? landing : (viewName === 'auth' ? auth : app), 
+                        { opacity: 0 }, 
+                        { opacity: 1, duration: 0.5, ease: "power2.out" }
+                    );
                 }
             });
-        });
+        }
 
-        // Parallax Effect for Hero Image
-        gsap.to(".parallax-img", {
-            yPercent: -15,
-            ease: "none",
-            scrollTrigger: {
-                trigger: "body",
-                start: "top top",
-                end: "bottom top",
-                scrub: true
+        function handleLogin(e) {
+            e.preventDefault();
+            // Simulate API call
+            const btn = e.target.querySelector('button');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                switchView('app');
+            }, 800);
+        }
+
+        // --- Landing Page Animations ---
+        function initLandingAnimations() {
+            gsap.from(".hero-line", { y: 150, opacity: 0, duration: 1.5, stagger: 0.15, ease: "power4.out", delay: 0.2 });
+            gsap.from(".hero-fade", { y: 30, opacity: 0, duration: 1.2, stagger: 0.2, ease: "power3.out", delay: 0.8 });
+            
+            gsap.utils.toArray('.reveal-up').forEach(element => {
+                gsap.from(element, {
+                    scrollTrigger: { trigger: element, start: "top 85%", toggleActions: "play none none reverse" },
+                    y: 50, opacity: 0, duration: 1, ease: "power3.out"
+                });
+            });
+            gsap.utils.toArray('.reveal-image').forEach(element => {
+                ScrollTrigger.create({ trigger: element, start: "top 80%", onEnter: () => element.classList.add('revealed') });
+            });
+        }
+        
+        // Initialize landing on load
+        window.addEventListener('load', initLandingAnimations);
+
+        // --- App Logic ---
+        let tasks = [
+            { id: 1, time: "08:00", title: "Morning Reflection & Coffee", category: "Rest", media: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=200&auto=format&fit=crop", animation: "fade" },
+            { id: 2, time: "10:30", title: "Deep Work: UI Design", category: "Focus", media: null, animation: "slide" },
+            { id: 3, time: "14:00", title: "Team Sync & Video Review", category: "Meeting", media: "https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-futuristic-devices-99786-large.mp4", animation: "elastic" }
+        ];
+
+        function getCategoryColor(category) {
+            const colors = {
+                "Focus": "bg-stone-900 text-white",
+                "Creative": "bg-orange-100 text-orange-800",
+                "Rest": "bg-green-100 text-green-800",
+                "Meeting": "bg-blue-100 text-blue-800"
+            };
+            return colors[category] || "bg-stone-100 text-stone-800";
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('task-list');
+            container.innerHTML = '';
+            document.getElementById('task-count').innerText = tasks.length;
+
+            tasks.sort((a, b) => a.time.localeCompare(b.time));
+
+            tasks.forEach((task, index) => {
+                const mediaHtml = task.media 
+                    ? (task.media.includes('.mp4') 
+                        ? `<video src="${task.media}" class="w-full h-full object-cover" muted loop autoplay playsinline></video>` 
+                        : `<img src="${task.media}" class="w-full h-full object-cover">`)
+                    : '';
+                
+                const mediaContainer = task.media 
+                    ? `<div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border border-stone-200 bg-stone-100">${mediaHtml}</div>` 
+                    : '';
+
+                const html = `
+                    <div class="task-card group flex gap-6 p-6 bg-white rounded-2xl border border-stone-100 shadow-sm relative overflow-hidden" id="task-${task.id}">
+                        <div class="flex-shrink-0 w-20 text-right">
+                            <div class="text-lg font-medium text-stone-900">${task.time}</div>
+                        </div>
+                        <div class="absolute left-0 top-0 bottom-0 w-1 bg-stone-200 group-hover:bg-stone-900 transition-colors duration-300"></div>
+                        
+                        <div class="flex-1 flex items-center justify-between gap-4">
+                            <div>
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${getCategoryColor(task.category)}">${task.category}</span>
+                                </div>
+                                <h4 class="text-xl font-serif text-stone-900 mb-1">${task.title}</h4>
+                                <p class="text-sm text-stone-500">Scheduled moment</p>
+                            </div>
+                            ${mediaContainer}
+                        </div>
+                        
+                        <button onclick="deleteTask(${task.id})" class="absolute top-4 right-4 text-stone-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                        </button>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', html);
+            });
+        }
+
+        function deleteTask(id) {
+            const el = document.getElementById(`task-${id}`);
+            gsap.to(el, {
+                x: 50,
+                opacity: 0,
+                height: 0,
+                margin: 0,
+                padding: 0,
+                duration: 0.4,
+                ease: "power2.in",
+                onComplete: () => {
+                    tasks = tasks.filter(t => t.id !== id);
+                    renderTasks();
+                }
+            });
+        }
+
+        // --- Modal Logic ---
+        function openModal() {
+            const modal = document.getElementById('task-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('task-modal');
+            const content = document.getElementById('modal-content');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.querySelector('form').reset();
+                document.getElementById('media-preview').classList.add('hidden');
+            }, 300);
+        }
+
+        function previewMedia(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview-img').src = e.target.result;
+                    document.getElementById('media-preview').classList.remove('hidden');
+                }
+                reader.readAsDataURL(input.files[0]);
             }
-        });
+        }
 
-        // Video Play Interaction
-        const videoContainer = document.getElementById('video-container');
-        const video = document.getElementById('promo-video');
-        const playButton = document.getElementById('play-button');
-
-        videoContainer.addEventListener('click', () => {
-            if (video.paused) {
-                video.play();
-                playButton.style.opacity = '0';
-                playButton.style.pointerEvents = 'none';
-            } else {
-                video.pause();
-                playButton.style.opacity = '1';
-                playButton.style.pointerEvents = 'auto';
+        function handleAddTask(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('task-title').value;
+            const time = document.getElementById('task-time').value;
+            const category = document.getElementById('task-category').value;
+            const animation = document.querySelector('input[name="animation"]:checked').value;
+            const mediaInput = document.getElementById('task-media');
+            
+            let mediaUrl = null;
+            if (mediaInput.files && mediaInput.files[0]) {
+                mediaUrl = URL.createObjectURL(mediaInput.files[0]);
             }
-        });
+
+            const newTask = {
+                id: Date.now(),
+                time,
+                title,
+                category,
+                media: mediaUrl,
+                animation
+            };
+
+            tasks.push(newTask);
+            closeModal();
+            
+            // Re-render and animate the new item
+            renderTasks();
+            
+            setTimeout(() => {
+                const newEl = document.getElementById(`task-${newTask.id}`);
+                let animProps = { opacity: 0, y: 30, duration: 0.6, ease: "power3.out" };
+                
+                if (animation === 'slide') animProps = { opacity: 0, y: 50, duration: 0.5, ease: "power2.out" };
+                if (animation === 'elastic') animProps = { opacity: 0, scale: 0.8, duration: 0.6, ease: "back.out(1.7)" };
+                
+                gsap.fromTo(newEl, { opacity: 0, y: 30, scale: animation === 'elastic' ? 0.8 : 1 }, 
+                                 { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: animation === 'elastic' ? "back.out(1.7)" : "power3.out" });
+            }, 50);
+        }
+
+        // Set current date
+        const options = { weekday: 'long', month: 'short', day: 'numeric' };
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', options);
     </script>
 </body>
 </html>
-

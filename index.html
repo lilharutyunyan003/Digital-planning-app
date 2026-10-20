@@ -61,17 +61,15 @@
         ::-webkit-scrollbar-thumb { background: #D6D3D1; border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: #A8A29E; }
 
-        /* App Specific Styles */
-        .app-view { display: none; height: 100vh; width: 100vw; overflow: hidden; }
-        .app-view.active { display: flex; }
+        /* View Management Styles */
+        .view-section { display: none; width: 100%; min-height: 100vh; }
+        .view-section.active { display: block; }
         
-        .task-card {
-            transition: all 0.3s ease;
-        }
-        .task-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
-        }
+        .app-layout { display: none; height: 100vh; width: 100vw; overflow: hidden; }
+        .app-layout.active { display: flex; }
+
+        .task-card { transition: all 0.3s ease; }
+        .task-card:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body class="antialiased selection:bg-stone-300 selection:text-stone-900">
@@ -80,16 +78,16 @@
     <!-- ========================================== -->
     <!-- VIEW 1: LANDING PAGE -->
     <!-- ========================================== -->
-    <div id="view-landing" class="view-container">
+    <div id="view-landing" class="view-section active">
         <!-- Navigation -->
         <nav class="fixed top-0 w-full z-40 bg-[#FAFAF9]/80 backdrop-blur-md border-b border-stone-200/50 px-6 py-4 flex justify-between items-center">
             <div class="text-2xl font-serif tracking-tight font-semibold text-stone-900">DAYFLOW</div>
             <div class="hidden md:flex gap-8 text-sm font-medium tracking-wide text-stone-600">
                 <a href="#philosophy" class="hover:text-stone-900 transition-colors">Philosophy</a>
                 <a href="#features" class="hover:text-stone-900 transition-colors">Features</a>
-                <a href="#gallery" class="hover:text-stone-900 transition-colors">Gallery</a>
                 <a href="#pricing" class="hover:text-stone-900 transition-colors">Pricing</a>
             </div>
+            <!-- GET STARTED BUTTON -->
             <button onclick="switchView('auth')" class="px-6 py-2.5 bg-stone-900 text-white rounded-full text-sm font-medium hover:bg-stone-700 transition-all duration-300 shadow-lg shadow-stone-900/10">Get Started</button>
         </nav>
 
@@ -107,6 +105,7 @@
                         The digital planner that adapts to your rhythm. Seamlessly integrate photos, videos, and your daily intentions in one beautiful, animated space.
                     </p>
                     <div class="flex flex-wrap gap-4 hero-fade">
+                        <!-- GET STARTED BUTTON -->
                         <button onclick="switchView('auth')" class="px-8 py-4 bg-stone-900 text-white rounded-full text-sm font-medium hover:bg-stone-700 transition-all duration-300 flex items-center gap-2 group">
                             Start your flow
                             <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
@@ -148,7 +147,7 @@
             </div>
         </div>
 
-        <!-- Pricing Section (Condensed for brevity, links to auth) -->
+        <!-- Pricing Section -->
         <section id="pricing" class="py-32 px-6 md:px-12 lg:px-24">
             <div class="max-w-4xl mx-auto text-center mb-20">
                 <span class="text-xs font-bold tracking-[0.2em] text-stone-500 uppercase mb-4 block reveal-up">Pricing</span>
@@ -158,12 +157,14 @@
                 <div class="group p-8 md:p-12 rounded-3xl border border-stone-200 bg-white hover:border-stone-400 transition-all duration-500 hover:shadow-xl reveal-up">
                     <h3 class="font-serif text-3xl text-stone-900 mb-2">Dayflow Basic</h3>
                     <div class="flex items-baseline gap-1 mb-8"><span class="font-serif text-5xl text-stone-900">$0</span><span class="text-stone-500">/forever</span></div>
+                    <!-- GET STARTED BUTTON -->
                     <button onclick="switchView('auth')" class="w-full py-4 rounded-full border border-stone-900 text-stone-900 font-medium hover:bg-stone-900 hover:text-white transition-all duration-300">Get Started Free</button>
                 </div>
                 <div class="group relative p-8 md:p-12 rounded-3xl border border-stone-900 bg-stone-900 text-stone-100 hover:shadow-2xl transition-all duration-500 transform md:-translate-y-4 reveal-up">
                     <div class="absolute top-0 right-8 bg-white text-stone-900 text-[10px] font-bold px-3 py-1.5 rounded-b-lg uppercase tracking-widest">Recommended</div>
                     <h3 class="font-serif text-3xl mb-2">Dayflow Pro</h3>
                     <div class="flex items-baseline gap-1 mb-8"><span class="font-serif text-5xl text-white">$9</span><span class="text-stone-400">/month</span></div>
+                    <!-- GET STARTED BUTTON -->
                     <button onclick="switchView('auth')" class="w-full py-4 rounded-full bg-white text-stone-900 font-medium hover:bg-stone-200 transition-all duration-300">Upgrade to Pro</button>
                 </div>
             </div>
@@ -171,9 +172,9 @@
     </div>
 
     <!-- ========================================== -->
-    <!-- VIEW 2: AUTHENTICATION -->
+    <!-- VIEW 2: SIGN IN / AUTHENTICATION -->
     <!-- ========================================== -->
-    <div id="view-auth" class="app-view bg-[#FAFAF9] flex items-center justify-center p-6">
+    <div id="view-auth" class="view-section bg-[#FAFAF9] flex items-center justify-center p-6">
         <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-stone-100 p-8 md:p-12 relative overflow-hidden">
             <button onclick="switchView('landing')" class="absolute top-6 left-6 text-stone-400 hover:text-stone-900 transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
@@ -193,7 +194,7 @@
                     <label class="block text-xs font-bold tracking-widest text-stone-500 uppercase mb-2">Password</label>
                     <input type="password" value="password" class="w-full px-4 py-3 rounded-xl border border-stone-200 focus:border-stone-900 focus:ring-1 focus:ring-stone-900 outline-none transition-all bg-stone-50" required>
                 </div>
-                <button type="submit" class="w-full py-4 bg-stone-900 text-white rounded-xl font-medium hover:bg-stone-700 transition-all duration-300 shadow-lg shadow-stone-900/10 flex items-center justify-center gap-2">
+                <button type="submit" id="login-btn" class="w-full py-4 bg-stone-900 text-white rounded-xl font-medium hover:bg-stone-700 transition-all duration-300 shadow-lg shadow-stone-900/10 flex items-center justify-center gap-2">
                     <span>Sign In</span>
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                 </button>
@@ -205,7 +206,7 @@
     <!-- ========================================== -->
     <!-- VIEW 3: APP DASHBOARD -->
     <!-- ========================================== -->
-    <div id="view-app" class="app-view bg-[#FAFAF9]">
+    <div id="view-app" class="app-layout bg-[#FAFAF9]">
         <!-- Sidebar -->
         <aside class="w-20 lg:w-64 border-r border-stone-200 bg-white/60 backdrop-blur-md flex flex-col flex-shrink-0 transition-all duration-300">
             <div class="p-6 flex items-center gap-3">
@@ -221,10 +222,6 @@
                 <a href="#" class="flex items-center gap-3 px-4 py-3 text-stone-600 hover:bg-stone-100 rounded-xl font-medium transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                     <span class="hidden lg:block">Media Library</span>
-                </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-stone-600 hover:bg-stone-100 rounded-xl font-medium transition-all">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
-                    <span class="hidden lg:block">Templates</span>
                 </a>
             </nav>
 
@@ -256,7 +253,7 @@
             <!-- Schedule Timeline -->
             <div class="flex-1 overflow-y-auto p-8" id="schedule-container">
                 <div class="max-w-3xl mx-auto space-y-6" id="task-list">
-                    <!-- Tasks will be injected here via JS -->
+                    <!-- Tasks injected via JS -->
                 </div>
             </div>
         </main>
@@ -344,19 +341,21 @@
             const auth = document.getElementById('view-auth');
             const app = document.getElementById('view-app');
 
-            let currentView = landing.classList.contains('hidden') ? (auth.classList.contains('active') ? auth : app) : landing;
+            // Determine current active view
+            let currentEl = landing.classList.contains('active') ? landing : (auth.classList.contains('active') ? auth : app);
 
             // Fade out current
-            gsap.to(currentView, {
+            gsap.to(currentEl, {
                 opacity: 0,
                 duration: 0.4,
                 onComplete: () => {
-                    landing.classList.add('hidden');
+                    landing.classList.remove('active');
                     auth.classList.remove('active');
                     app.classList.remove('active');
 
+                    // Activate new view
                     if (viewName === 'landing') {
-                        landing.classList.remove('hidden');
+                        landing.classList.add('active');
                         initLandingAnimations();
                     } else if (viewName === 'auth') {
                         auth.classList.add('active');
@@ -366,25 +365,29 @@
                     }
 
                     // Fade in new
-                    gsap.fromTo(viewName === 'landing' ? landing : (viewName === 'auth' ? auth : app), 
-                        { opacity: 0 }, 
-                        { opacity: 1, duration: 0.5, ease: "power2.out" }
-                    );
+                    const newEl = viewName === 'landing' ? landing : (viewName === 'auth' ? auth : app);
+                    gsap.fromTo(newEl, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.out" });
+                    
+                    // Reset scroll
+                    window.scrollTo(0, 0);
                 }
             });
         }
 
         function handleLogin(e) {
             e.preventDefault();
-            // Simulate API call
-            const btn = e.target.querySelector('button');
+            const btn = document.getElementById('login-btn');
             const originalText = btn.innerHTML;
+            
+            // Simulate loading
             btn.innerHTML = `<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+            btn.disabled = true;
             
             setTimeout(() => {
                 btn.innerHTML = originalText;
+                btn.disabled = false;
                 switchView('app');
-            }, 800);
+            }, 1000);
         }
 
         // --- Landing Page Animations ---
@@ -430,7 +433,7 @@
 
             tasks.sort((a, b) => a.time.localeCompare(b.time));
 
-            tasks.forEach((task, index) => {
+            tasks.forEach((task) => {
                 const mediaHtml = task.media 
                     ? (task.media.includes('.mp4') 
                         ? `<video src="${task.media}" class="w-full h-full object-cover" muted loop autoplay playsinline></video>` 
@@ -471,13 +474,7 @@
         function deleteTask(id) {
             const el = document.getElementById(`task-${id}`);
             gsap.to(el, {
-                x: 50,
-                opacity: 0,
-                height: 0,
-                margin: 0,
-                padding: 0,
-                duration: 0.4,
-                ease: "power2.in",
+                x: 50, opacity: 0, height: 0, margin: 0, padding: 0, duration: 0.4, ease: "power2.in",
                 onComplete: () => {
                     tasks = tasks.filter(t => t.id !== id);
                     renderTasks();
@@ -544,10 +541,9 @@
 
             tasks.push(newTask);
             closeModal();
-            
-            // Re-render and animate the new item
             renderTasks();
             
+            // Animate the newly added task based on user selection
             setTimeout(() => {
                 const newEl = document.getElementById(`task-${newTask.id}`);
                 let animProps = { opacity: 0, y: 30, duration: 0.6, ease: "power3.out" };
@@ -560,7 +556,7 @@
             }, 50);
         }
 
-        // Set current date
+        // Set current date dynamically
         const options = { weekday: 'long', month: 'short', day: 'numeric' };
         document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', options);
     </script>
